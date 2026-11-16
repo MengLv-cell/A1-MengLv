@@ -15,7 +15,7 @@ public class Physiotherapist extends HealthProfessional {
 
     /**
      * Static factory method to create a valid Physiotherapist object.
-     * Returns null if core identity fields are invalid.
+     * Returns null if core fields are invalid or no working days are provided.
      * @param professionalId positive numeric ID
      * @param name non-blank full name
      * @param availableDays list of working weekdays
@@ -27,6 +27,10 @@ public class Physiotherapist extends HealthProfessional {
         if (name == null || name.isBlank()) return null;
         if (availableDays == null) return null;
         if (treatmentFocus == null || treatmentFocus.isBlank()) return null;
+
+        ArrayList<String> cleanedDays = HealthProfessional.cleanWeekdayList(availableDays);
+        if (cleanedDays.isEmpty()) return null;
+
         return new Physiotherapist(professionalId, name, availableDays, treatmentFocus);
     }
 
@@ -59,7 +63,7 @@ public class Physiotherapist extends HealthProfessional {
     }
 
     /**
-     * Simulates a physical therapy session.
+     * Simulates a physical therapy session action.
      * @param patientName name of the patient receiving therapy
      */
     public void conductTherapySession(String patientName) {

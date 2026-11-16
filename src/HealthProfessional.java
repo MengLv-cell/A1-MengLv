@@ -26,10 +26,11 @@ public abstract class HealthProfessional {
 
     /**
      * Filters a list to keep only valid, non-duplicate weekday names.
+     * Shared across parent and all subclasses for consistent validation.
      * @param days raw input list
      * @return cleaned list of valid weekdays
      */
-    private ArrayList<String> cleanWeekdayList(ArrayList<String> days) {
+    protected static ArrayList<String> cleanWeekdayList(ArrayList<String> days) {
         ArrayList<String> cleaned = new ArrayList<>();
         if (days == null) {
             return cleaned;
@@ -47,7 +48,7 @@ public abstract class HealthProfessional {
      * @param day day name to check
      * @return true if the input is a valid weekday
      */
-    private boolean isValidWeekday(String day) {
+    private static boolean isValidWeekday(String day) {
         if (day == null) return false;
         return day.equals("Monday")
                 || day.equals("Tuesday")

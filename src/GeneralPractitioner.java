@@ -15,7 +15,7 @@ public class GeneralPractitioner extends HealthProfessional {
 
     /**
      * Static factory method to create a valid GP object.
-     * Returns null if core identity fields are invalid.
+     * Returns null if core fields are invalid or no working days are provided.
      * @param professionalId positive numeric ID
      * @param name non-blank full name
      * @param availableDays list of working weekdays
@@ -26,6 +26,10 @@ public class GeneralPractitioner extends HealthProfessional {
         if (professionalId <= 0) return null;
         if (name == null || name.isBlank()) return null;
         if (availableDays == null) return null;
+
+        ArrayList<String> cleanedDays = HealthProfessional.cleanWeekdayList(availableDays);
+        if (cleanedDays.isEmpty()) return null;
+
         return new GeneralPractitioner(professionalId, name, availableDays, canPrescribeMedication);
     }
 
@@ -39,7 +43,7 @@ public class GeneralPractitioner extends HealthProfessional {
     }
 
     /**
-     * Returns whether the GP can prescribe medication.
+     * Returns whether the GP has prescription authority.
      * @return prescription authority status
      */
     public boolean canPrescribeMedication() {

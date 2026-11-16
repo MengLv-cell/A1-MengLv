@@ -1,7 +1,7 @@
 /**
  * Represents a single appointment linking a patient and a health professional.
  * Time is stored as minutes offset from 08:00.
- * Basic null and time validation is performed at creation.
+ * Valid appointments require complete patient contact details and a valid time slot.
  * @author Meng Lv
  */
 public class Appointment implements Comparable<Appointment> {
@@ -13,8 +13,8 @@ public class Appointment implements Comparable<Appointment> {
     /**
      * Private constructor: internal use only.
      * Callers must use the create() factory method to obtain instances.
-     * @param patient patient object
-     * @param professional health professional object
+     * @param patient validated patient object
+     * @param professional validated health professional object
      * @param timeSlotMinutes validated time slot
      */
     private Appointment(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
@@ -26,21 +26,45 @@ public class Appointment implements Comparable<Appointment> {
 
     /**
      * Static factory method to create an appointment.
-     * Performs basic null and time slot validation only.
-     * Callers must ensure patient and professional objects are already valid.
-     * @param patient patient object, must not be null
-     * @param professional health professional, must not be null
+     * Rejects incomplete patient data, null references and invalid time slots.
+     * Full business validation is still enforced by AppointmentManager.
+     * @param patient patient object with valid name and 10-digit phone
+     * @param professional health professional object, must not be null
      * @param timeSlotMinutes valid 30-minute slot within opening hours
-     * @return valid Appointment object, or null if basic validation fails
+     * @return valid Appointment object, or null if validation fails
      */
     public static Appointment create(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
         if (patient == null || professional == null) {
+            return null;
+        }
+        // Reject appointments with incomplete patient details
+        if (patient.getFullName() == null || patient.getFullName().isBlank()) {
+            return null;
+        }
+        if (!isValidMobile(patient.getMobilePhone())) {
             return null;
         }
         if (!ClinicSchedule.isValidSlot(timeSlotMinutes)) {
             return null;
         }
         return new Appointment(patient, professional, timeSlotMinutes);
+    }
+
+    /**
+     * Checks if a phone number is a valid 10-digit numeric string.
+     * @param phone phone number to check
+     * @return true if valid
+     */
+    private static boolean isValidMobile(String phone) {
+        if (phone == null || phone.length() != 10) {
+            return false;
+        }
+        for (int i = 0; i < phone.length(); i++) {
+            if (!Character.isDigit(phone.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -86,7 +110,7 @@ public class Appointment implements Comparable<Appointment> {
     /**
      * Compares appointments by start time for ascending sorting.
      * @param other the other appointment to compare with
-     * @return negative if this appointment is earlier, positive if later, zero if same time
+     * @return negative if earlier, positive if later, zero if same time
      */
     @Override
     public int compareTo(Appointment other) {
