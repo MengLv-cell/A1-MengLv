@@ -1,7 +1,7 @@
 /**
  * Represents a single appointment linking a patient and a health professional.
  * Time is stored as minutes offset from 08:00.
- * Valid appointments require complete patient contact details and a valid time slot.
+ * Appointments can only be created with complete valid patient and professional details.
  * @author Meng Lv
  */
 public class Appointment implements Comparable<Appointment> {
@@ -13,9 +13,9 @@ public class Appointment implements Comparable<Appointment> {
     /**
      * Private constructor: internal use only.
      * Callers must use the create() factory method to obtain instances.
-     * @param patient validated patient object
+     * @param patient validated patient object with valid phone
      * @param professional validated health professional object
-     * @param timeSlotMinutes validated time slot
+     * @param timeSlotMinutes valid time slot
      */
     private Appointment(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
         this.patient = patient;
@@ -26,8 +26,9 @@ public class Appointment implements Comparable<Appointment> {
 
     /**
      * Static factory method to create an appointment.
-     * Rejects incomplete patient data, null references and invalid time slots.
-     * Full business validation is still enforced by AppointmentManager.
+     * Rejects incomplete patient details, null references and invalid time slots.
+     * Patient must have a valid 10-digit phone number for an appointment to be created.
+     * Additional business validation is enforced by AppointmentManager.
      * @param patient patient object with valid name and 10-digit phone
      * @param professional health professional object, must not be null
      * @param timeSlotMinutes valid 30-minute slot within opening hours
@@ -37,34 +38,17 @@ public class Appointment implements Comparable<Appointment> {
         if (patient == null || professional == null) {
             return null;
         }
-        // Reject appointments with incomplete patient details
+        // Appointment-level rule: patient phone must be valid to create a booking
         if (patient.getFullName() == null || patient.getFullName().isBlank()) {
             return null;
         }
-        if (!isValidMobile(patient.getMobilePhone())) {
+        if (patient.getMobilePhone() == null || patient.getMobilePhone().length() != 10) {
             return null;
         }
         if (!ClinicSchedule.isValidSlot(timeSlotMinutes)) {
             return null;
         }
         return new Appointment(patient, professional, timeSlotMinutes);
-    }
-
-    /**
-     * Checks if a phone number is a valid 10-digit numeric string.
-     * @param phone phone number to check
-     * @return true if valid
-     */
-    private static boolean isValidMobile(String phone) {
-        if (phone == null || phone.length() != 10) {
-            return false;
-        }
-        for (int i = 0; i < phone.length(); i++) {
-            if (!Character.isDigit(phone.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**

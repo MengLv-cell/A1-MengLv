@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /**
  * Abstract base class representing a generic health professional.
  * Cannot be instantiated directly.
- * Internal weekday list is always filtered and protected from external modification.
+ * A valid professional must always have at least one working day.
  * @author Meng Lv
  */
 public abstract class HealthProfessional {
@@ -105,13 +105,20 @@ public abstract class HealthProfessional {
     /**
      * Updates the available working days.
      * Invalid entries and duplicates are filtered automatically.
-     * Null input is ignored.
+     * Null or empty input is ignored to ensure the professional always has at least one working day.
+     * Rule is consistent with factory creation logic.
      * @param availableDays new working days list
      */
     public void setAvailableDays(ArrayList<String> availableDays) {
-        if (availableDays != null) {
-            this.availableDays = cleanWeekdayList(availableDays);
+        if (availableDays == null) {
+            return;
         }
+        ArrayList<String> cleanedDays = cleanWeekdayList(availableDays);
+        // 与工厂规则保持一致：空工作日列表不生效，保留原有状态
+        if (cleanedDays.isEmpty()) {
+            return;
+        }
+        this.availableDays = cleanedDays;
     }
 
     /**

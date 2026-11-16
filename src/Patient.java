@@ -1,6 +1,7 @@
 /**
  * Represents a patient with basic contact details.
- * Name is required to create an object; phone number is validated separately.
+ * Patient records may be created with incomplete phone information.
+ * Appointment-level validation ensures only complete valid data enters bookings.
  * @author Meng Lv
  */
 public class Patient {
@@ -10,6 +11,7 @@ public class Patient {
     /**
      * Private constructor: internal use only.
      * Callers must use the create() factory method to obtain instances.
+     * Invalid phone numbers are stored as empty string.
      * @param fullName validated patient name
      * @param mobilePhone phone number, may be empty if invalid
      */
@@ -20,7 +22,9 @@ public class Patient {
 
     /**
      * Static factory method to create a Patient object.
-     * Returns null if the name is blank or null; invalid phone numbers are stored as empty string.
+     * Returns null if the name is blank or null.
+     * Invalid phone numbers are stored as empty string; patient record can still exist.
+     * Full phone validation is enforced at appointment booking level.
      * @param fullName patient full name, must not be blank
      * @param mobilePhone 10-digit contact phone number
      * @return valid Patient object, or null if name is invalid
@@ -68,7 +72,7 @@ public class Patient {
 
     /**
      * Updates the patient full name.
-     * Blank or null values are ignored.
+     * Blank or null values are ignored to preserve valid state.
      * @param fullName new patient name
      */
     public void setFullName(String fullName) {
