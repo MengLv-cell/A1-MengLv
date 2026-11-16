@@ -9,6 +9,13 @@ import java.util.Arrays;
  * @author Meng Lv
  */
 public class AssignmentOne {
+
+    /**
+     * Main method: entry point of the clinic appointment system demonstration.
+     * Shows professional team listing, normal booking workflow, sorting,
+     * filtering, cancellation, error rejection cases and role-specific behaviours.
+     * @param args command line arguments (not used)
+     */
     public static void main(String[] args) {
         AppointmentManager manager = new AppointmentManager();
 
@@ -17,7 +24,8 @@ public class AssignmentOne {
         System.out.println("PART 3: Health Professional Team");
         System.out.println("==================================================");
 
-        // All staff created via static factory method
+        // Polymorphism demonstration: all stored under the same parent type
+        // When toString() and getRole() are called, the subclass version runs automatically
         HealthProfessional gp1 = GeneralPractitioner.create(101, "Anna Miller",
                 new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Friday")), true);
         HealthProfessional gp2 = GeneralPractitioner.create(102, "Ben Carter",
@@ -42,6 +50,7 @@ public class AssignmentOne {
         staff.add(diet1);
         staff.add(physio1);
 
+        // Dynamic dispatch: same parent reference, different subclass toString() behaviour
         for (HealthProfessional hp : staff) {
             System.out.println(hp);
         }
@@ -69,8 +78,9 @@ public class AssignmentOne {
         manager.displayAllActiveAppointments();
         System.out.println();
 
-        // Demonstrate unique duties for each professional type
-        System.out.println("----- Professional Role Demonstration -----");
+        // Subclass-specific duties: require downcast because these methods are not in the parent class
+        // This is separate from polymorphic dynamic dispatch shown above
+        System.out.println("----- Professional Role-Specific Duties -----");
         ((GeneralPractitioner) gp1).conductConsultation(p1.getFullName());
         ((Specialist) spec1).acceptReferral(gp1.getName());
         ((Nurse) nurse1).checkVitalSigns(p2.getFullName());
