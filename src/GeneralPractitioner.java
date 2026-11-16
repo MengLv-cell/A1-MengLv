@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 /**
  * General Practitioner (GP) health professional type.
+ * Provides general consultation services.
  * @author Meng Lv
  */
 public class GeneralPractitioner extends HealthProfessional {
@@ -14,11 +15,11 @@ public class GeneralPractitioner extends HealthProfessional {
 
     /**
      * Static factory method to create a valid GP object.
-     * Returns null if core inputs are invalid.
+     * Returns null if core identity fields are invalid.
      * @param professionalId positive numeric ID
      * @param name non-blank full name
      * @param availableDays list of working weekdays
-     * @param canPrescribeMedication prescription authority
+     * @param canPrescribeMedication prescription authority flag
      * @return valid GP object, or null if validation fails
      */
     public static GeneralPractitioner create(int professionalId, String name, ArrayList<String> availableDays, boolean canPrescribeMedication) {
@@ -28,23 +29,43 @@ public class GeneralPractitioner extends HealthProfessional {
         return new GeneralPractitioner(professionalId, name, availableDays, canPrescribeMedication);
     }
 
+    /**
+     * Returns the role name of this professional.
+     * @return role description
+     */
     @Override
     public String getRole() {
         return "General Practitioner";
     }
 
+    /**
+     * Returns whether the GP can prescribe medication.
+     * @return prescription authority status
+     */
     public boolean canPrescribeMedication() {
         return canPrescribeMedication;
     }
 
+    /**
+     * Updates the prescription authority status.
+     * @param canPrescribeMedication new status
+     */
     public void setCanPrescribeMedication(boolean canPrescribeMedication) {
         this.canPrescribeMedication = canPrescribeMedication;
     }
 
+    /**
+     * Simulates a general consultation action.
+     * @param patientName name of the patient receiving consultation
+     */
     public void conductConsultation(String patientName) {
         System.out.println("Dr. " + getName() + " conducts a general consultation for " + patientName);
     }
 
+    /**
+     * Returns a formatted string with full GP details.
+     * @return formatted professional information
+     */
     @Override
     public String toString() {
         return super.toString() + " | Can prescribe: " + canPrescribeMedication;

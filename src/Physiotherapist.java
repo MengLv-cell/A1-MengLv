@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Physiotherapist health professional type.
+ * Provides physical therapy and rehabilitation services.
  * @author Meng Lv
  */
 public class Physiotherapist extends HealthProfessional {
@@ -14,37 +15,61 @@ public class Physiotherapist extends HealthProfessional {
 
     /**
      * Static factory method to create a valid Physiotherapist object.
-     * Returns null if core inputs are invalid.
+     * Returns null if core identity fields are invalid.
      * @param professionalId positive numeric ID
      * @param name non-blank full name
      * @param availableDays list of working weekdays
-     * @param treatmentFocus area of therapy expertise
+     * @param treatmentFocus area of physical therapy
      * @return valid Physiotherapist object, or null if validation fails
      */
     public static Physiotherapist create(int professionalId, String name, ArrayList<String> availableDays, String treatmentFocus) {
         if (professionalId <= 0) return null;
         if (name == null || name.isBlank()) return null;
         if (availableDays == null) return null;
+        if (treatmentFocus == null || treatmentFocus.isBlank()) return null;
         return new Physiotherapist(professionalId, name, availableDays, treatmentFocus);
     }
 
+    /**
+     * Returns the role name of this professional.
+     * @return role description
+     */
     @Override
     public String getRole() {
         return "Physiotherapist";
     }
 
+    /**
+     * Returns the physical therapy focus area.
+     * @return treatment focus area
+     */
     public String getTreatmentFocus() {
         return treatmentFocus;
     }
 
+    /**
+     * Updates the physical therapy focus area.
+     * Blank or null values are ignored.
+     * @param treatmentFocus new treatment focus
+     */
     public void setTreatmentFocus(String treatmentFocus) {
-        this.treatmentFocus = treatmentFocus;
+        if (treatmentFocus != null && !treatmentFocus.isBlank()) {
+            this.treatmentFocus = treatmentFocus;
+        }
     }
 
+    /**
+     * Simulates a physical therapy session.
+     * @param patientName name of the patient receiving therapy
+     */
     public void conductTherapySession(String patientName) {
         System.out.println("Physiotherapist " + getName() + " conducts " + treatmentFocus + " therapy for " + patientName);
     }
 
+    /**
+     * Returns a formatted string with full physiotherapist details.
+     * @return formatted professional information
+     */
     @Override
     public String toString() {
         return super.toString() + " | Treatment focus: " + treatmentFocus;

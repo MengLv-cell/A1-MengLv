@@ -69,7 +69,7 @@ public class AssignmentOne {
         manager.displayAllActiveAppointments();
         System.out.println();
 
-        // Demonstrate unique duties for each professional type (polymorphism)
+        // Demonstrate unique duties for each professional type
         System.out.println("----- Professional Role Demonstration -----");
         ((GeneralPractitioner) gp1).conductConsultation(p1.getFullName());
         ((Specialist) spec1).acceptReferral(gp1.getName());
@@ -111,7 +111,6 @@ public class AssignmentOne {
         System.out.println("PART 6: Error & Rejection Test Cases");
         System.out.println("==================================================");
 
-        // All error tests use Monday except E10 (non-working day test)
         // E2: Cancel non-existent appointment
         System.out.println("[TEST E2] Cancel non-existent appointment");
         manager.cancelByProfessionalAndTime(999, 0);
@@ -133,7 +132,7 @@ public class AssignmentOne {
         System.out.println();
 
         // E6: Invalid patient phone (non-digit characters)
-        System.out.println("[TEST E6] Patient phone with non-digit characters");
+        System.out.println("[TEST E6] Booking with invalid phone number format");
         Patient badPhonePatient = Patient.create("Tom Green", "abcdefghij");
         manager.bookAppointment(badPhonePatient, gp1, 30, "Monday");
         System.out.println();

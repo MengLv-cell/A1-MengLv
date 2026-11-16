@@ -1,7 +1,6 @@
 /**
  * Represents a patient with basic contact details.
- * Objects can only be created via the static factory method.
- * Invalid inputs will return null and no object is created.
+ * Name is required to create an object; phone number is validated separately.
  * @author Meng Lv
  */
 public class Patient {
@@ -12,7 +11,7 @@ public class Patient {
      * Private constructor: internal use only.
      * Callers must use the create() factory method to obtain instances.
      * @param fullName validated patient name
-     * @param mobilePhone validated 10-digit phone number
+     * @param mobilePhone phone number, may be empty if invalid
      */
     private Patient(String fullName, String mobilePhone) {
         this.fullName = fullName;
@@ -20,20 +19,18 @@ public class Patient {
     }
 
     /**
-     * Static factory method to create a valid Patient object.
-     * Returns null if inputs are invalid.
+     * Static factory method to create a Patient object.
+     * Returns null if the name is blank or null; invalid phone numbers are stored as empty string.
      * @param fullName patient full name, must not be blank
-     * @param mobilePhone 10-digit numeric phone number
-     * @return valid Patient object, or null if validation fails
+     * @param mobilePhone 10-digit contact phone number
+     * @return valid Patient object, or null if name is invalid
      */
     public static Patient create(String fullName, String mobilePhone) {
         if (fullName == null || fullName.isBlank()) {
             return null;
         }
-        if (!isValidMobile(mobilePhone)) {
-            return null;
-        }
-        return new Patient(fullName, mobilePhone);
+        String validPhone = isValidMobile(mobilePhone) ? mobilePhone : "";
+        return new Patient(fullName, validPhone);
     }
 
     /**
@@ -53,26 +50,48 @@ public class Patient {
         return true;
     }
 
+    /**
+     * Returns the patient full name.
+     * @return patient name
+     */
     public String getFullName() {
         return fullName;
     }
 
+    /**
+     * Returns the patient mobile phone number.
+     * @return 10-digit phone number, or empty string if invalid
+     */
     public String getMobilePhone() {
         return mobilePhone;
     }
 
+    /**
+     * Updates the patient full name.
+     * Blank or null values are ignored.
+     * @param fullName new patient name
+     */
     public void setFullName(String fullName) {
         if (fullName != null && !fullName.isBlank()) {
             this.fullName = fullName;
         }
     }
 
+    /**
+     * Updates the patient mobile phone number.
+     * Only accepts valid 10-digit numeric values; invalid input is ignored.
+     * @param mobilePhone new phone number
+     */
     public void setMobilePhone(String mobilePhone) {
         if (isValidMobile(mobilePhone)) {
             this.mobilePhone = mobilePhone;
         }
     }
 
+    /**
+     * Returns a formatted string with patient details.
+     * @return formatted patient information
+     */
     @Override
     public String toString() {
         return "Patient: " + fullName + " | Phone: " + mobilePhone;

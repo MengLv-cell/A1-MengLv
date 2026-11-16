@@ -2,8 +2,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Manages the full collection of appointments and all booking operations.
- * All validation and business logic lives in this class.
+ * Manages appointment booking lifecycle and business-level validation.
+ * Entity classes handle their own basic state validation.
+ * This class enforces booking rules, duplicate checks and working day constraints.
  * @author Meng Lv
  */
 public class AppointmentManager {
@@ -19,7 +20,7 @@ public class AppointmentManager {
     // ---------- private validation helpers ----------
 
     /**
-     * Checks if a professional ID is valid (positive integer).
+     * Checks if a professional ID is a positive integer.
      * @param id ID to check
      * @return true if valid
      */
@@ -75,11 +76,10 @@ public class AppointmentManager {
     /**
      * Validates and creates a new appointment.
      * Rejects invalid data, double bookings and non-working days.
-     * Uses static factory to ensure only valid appointment objects are created.
      * @param patient patient record
      * @param professional assigned health professional
      * @param timeSlotMinutes appointment start time in minutes from 08:00
-     * @param day day of the week for working day validation
+     * @param day day of the week for working day check
      * @return true if booking was accepted, false if rejected
      */
     public boolean bookAppointment(Patient patient, HealthProfessional professional, int timeSlotMinutes, String day) {

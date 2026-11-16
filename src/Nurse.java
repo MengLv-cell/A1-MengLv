@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Nurse health professional type.
+ * Provides patient care and clinical support services.
  * @author Meng Lv
  */
 public class Nurse extends HealthProfessional {
@@ -14,11 +15,11 @@ public class Nurse extends HealthProfessional {
 
     /**
      * Static factory method to create a valid Nurse object.
-     * Returns null if core inputs are invalid.
+     * Returns null if core identity fields are invalid.
      * @param professionalId positive numeric ID
      * @param name non-blank full name
      * @param availableDays list of working weekdays
-     * @param canAdministerVaccination vaccination authority
+     * @param canAdministerVaccination vaccination authority flag
      * @return valid Nurse object, or null if validation fails
      */
     public static Nurse create(int professionalId, String name, ArrayList<String> availableDays, boolean canAdministerVaccination) {
@@ -28,23 +29,43 @@ public class Nurse extends HealthProfessional {
         return new Nurse(professionalId, name, availableDays, canAdministerVaccination);
     }
 
+    /**
+     * Returns the role name of this professional.
+     * @return role description
+     */
     @Override
     public String getRole() {
         return "Nurse";
     }
 
+    /**
+     * Returns whether the nurse can administer vaccinations.
+     * @return vaccination administration status
+     */
     public boolean canAdministerVaccination() {
         return canAdministerVaccination;
     }
 
+    /**
+     * Updates the vaccination authority status.
+     * @param canAdministerVaccination new status
+     */
     public void setCanAdministerVaccination(boolean canAdministerVaccination) {
         this.canAdministerVaccination = canAdministerVaccination;
     }
 
+    /**
+     * Simulates a vital signs check action.
+     * @param patientName name of the patient being checked
+     */
     public void checkVitalSigns(String patientName) {
         System.out.println("Nurse " + getName() + " checks vital signs for " + patientName);
     }
 
+    /**
+     * Returns a formatted string with full nurse details.
+     * @return formatted professional information
+     */
     @Override
     public String toString() {
         return super.toString() + " | Can vaccinate: " + canAdministerVaccination;
