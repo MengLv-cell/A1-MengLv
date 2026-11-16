@@ -24,8 +24,9 @@ public class AssignmentOne {
         System.out.println("PART 3: Health Professional Team");
         System.out.println("==================================================");
 
-        // Polymorphism demonstration: all stored under the same parent type
-        // When toString() and getRole() are called, the subclass version runs automatically
+        // Polymorphism via dynamic dispatch:
+        // All objects are stored under the parent HealthProfessional type.
+        // When toString() and getRole() are called, the correct subclass version runs automatically.
         HealthProfessional gp1 = GeneralPractitioner.create(101, "Anna Miller",
                 new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Friday")), true);
         HealthProfessional gp2 = GeneralPractitioner.create(102, "Ben Carter",
@@ -50,7 +51,7 @@ public class AssignmentOne {
         staff.add(diet1);
         staff.add(physio1);
 
-        // Dynamic dispatch: same parent reference, different subclass toString() behaviour
+        // Dynamic dispatch in action: same parent type, different subclass behaviour
         for (HealthProfessional hp : staff) {
             System.out.println(hp);
         }
@@ -78,8 +79,8 @@ public class AssignmentOne {
         manager.displayAllActiveAppointments();
         System.out.println();
 
-        // Subclass-specific duties: require downcast because these methods are not in the parent class
-        // This is separate from polymorphic dynamic dispatch shown above
+        // Subclass-specific duties: require explicit downcasting.
+        // These methods are not defined in the parent class, so this is not dynamic dispatch polymorphism.
         System.out.println("----- Professional Role-Specific Duties -----");
         ((GeneralPractitioner) gp1).conductConsultation(p1.getFullName());
         ((Specialist) spec1).acceptReferral(gp1.getName());
@@ -142,6 +143,7 @@ public class AssignmentOne {
         System.out.println();
 
         // E6: Invalid patient phone (non-digit characters)
+        // Patient object is created with empty phone, but booking is rejected at appointment level
         System.out.println("[TEST E6] Booking with invalid phone number format");
         Patient badPhonePatient = Patient.create("Tom Green", "abcdefghij");
         manager.bookAppointment(badPhonePatient, gp1, 30, "Monday");
