@@ -22,6 +22,7 @@ public class GeneralPractitioner extends HealthProfessional {
 
     /**
      * Returns the role name of this professional.
+     * Overrides the abstract method from the parent class.
      * @return role description
      */
     @Override
@@ -55,6 +56,7 @@ public class GeneralPractitioner extends HealthProfessional {
 
     /**
      * Returns a formatted string with full GP details.
+     * Extends the parent toString with subclass-specific information.
      * @return formatted professional information
      */
     @Override

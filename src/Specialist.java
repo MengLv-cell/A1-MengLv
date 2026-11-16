@@ -22,6 +22,7 @@ public class Specialist extends HealthProfessional {
 
     /**
      * Returns the role name of this professional.
+     * Overrides the abstract method from the parent class.
      * @return role description
      */
     @Override
@@ -55,6 +56,7 @@ public class Specialist extends HealthProfessional {
 
     /**
      * Returns a formatted string with full specialist details.
+     * Extends the parent toString with subclass-specific information.
      * @return formatted professional information
      */
     @Override
