@@ -3,7 +3,8 @@ import java.util.Arrays;
 
 /**
  * Main entry class for PROG2004 Assignment 1.
- * Demonstrates the full appointment system and all error cases.
+ * All normal bookings are for the same day (Monday).
+ * Demonstrates full system features and all error test cases.
  * @author Meng Lv
  */
 public class AssignmentOne {
@@ -44,38 +45,45 @@ public class AssignmentOne {
         }
         System.out.println();
 
-        // ========== Part 6: Normal booking flow ==========
+        // ========== Part 6: Normal booking flow (single day: Monday) ==========
         System.out.println("==================================================");
-        System.out.println("PART 6: Normal Booking Workflow");
+        System.out.println("PART 6: Normal Booking Workflow (Monday)");
         System.out.println("==================================================");
 
         Patient p1 = new Patient("James Lee", "0412345678");
         Patient p2 = new Patient("Sophie Wang", "0498765432");
         Patient p3 = new Patient("Liam Davis", "0422111333");
 
-        manager.bookAppointment(p1, gp1, 0, "Monday");
-        manager.bookAppointment(p2, gp1, 60, "Wednesday");
-        manager.bookAppointment(p3, spec1, 120, "Wednesday");
-        manager.bookAppointment(p1, nurse1, 180, "Monday");
-        manager.bookAppointment(p2, diet1, 240, "Tuesday");
-        manager.bookAppointment(p3, physio1, 300, "Friday");
+        // Added in out-of-order to show sorting effect later
+        manager.bookAppointment(p3, gp3, 120, "Monday");  // 10:00
+        manager.bookAppointment(p1, gp1, 0, "Monday");     // 08:00
+        manager.bookAppointment(p2, gp1, 60, "Monday");    // 09:00
+        manager.bookAppointment(p1, nurse1, 180, "Monday"); // 11:00
+        manager.bookAppointment(p2, diet1, 240, "Monday");  // 12:00
+        manager.bookAppointment(p3, physio1, 300, "Monday");// 13:00
         System.out.println();
 
         manager.displayAllActiveAppointments();
         System.out.println();
 
-        // Filter tests
+        // E1: Double booking test (BEFORE cancellation, slot is still active)
+        System.out.println("[TEST E1] Double booking attempt: GP101 at 09:00 Monday");
+        manager.bookAppointment(p3, gp1, 60, "Monday");
+        System.out.println();
+
+        // Filter by professional
         ArrayList<Appointment> byPro = manager.filterByProfessionalId(101);
-        manager.displayList(byPro, "Filtered: Professional ID 101");
+        manager.displayList(byPro, "Filtered: Professional ID 101 (before sort)");
         System.out.println();
 
-        ArrayList<Appointment> byPhone = manager.filterByPatientPhone("0412345678");
-        manager.displayList(byPhone, "Filtered: Patient phone 0412345678");
-        System.out.println();
-
-        // Sort test
+        // Sort demonstration: out-of-order -> ascending
         manager.sortByTime(byPro);
         manager.displayList(byPro, "Sorted: Professional ID 101 by time");
+        System.out.println();
+
+        // Filter by phone
+        ArrayList<Appointment> byPhone = manager.filterByPatientPhone("0412345678");
+        manager.displayList(byPhone, "Filtered: Patient phone 0412345678");
         System.out.println();
 
         // Cancellation tests
@@ -87,15 +95,10 @@ public class AssignmentOne {
         manager.displayAllActiveAppointments();
         System.out.println();
 
-        // ========== Part 6: Error / rejection scenarios ==========
+        // ========== Part 6: Remaining error test cases ==========
         System.out.println("==================================================");
         System.out.println("PART 6: Error & Rejection Test Cases");
         System.out.println("==================================================");
-
-        // E1: Double booking
-        System.out.println("[TEST E1] Double booking attempt: GP101 at 09:00 Wednesday");
-        manager.bookAppointment(p3, gp1, 60, "Wednesday");
-        System.out.println();
 
         // E2: Cancel non-existent slot
         System.out.println("[TEST E2] Cancel non-existent appointment");
@@ -107,9 +110,9 @@ public class AssignmentOne {
         manager.cancelByPatientPhone("0400000000");
         System.out.println();
 
-        // E4: Time slot outside opening hours
-        System.out.println("[TEST E4] Booking at 16:30 (outside schedule)");
-        manager.bookAppointment(p1, gp2, 510, "Tuesday");
+        // E4: Time slot after last valid slot
+        System.out.println("[TEST E4] Booking at 16:00 (after last valid slot 15:30)");
+        manager.bookAppointment(p1, gp2, 480, "Tuesday");
         System.out.println();
 
         // E5: Non-30-minute slot
@@ -117,9 +120,9 @@ public class AssignmentOne {
         manager.bookAppointment(p1, gp2, 15, "Tuesday");
         System.out.println();
 
-        // E6: Patient with invalid phone
-        System.out.println("[TEST E6] Patient with invalid short phone number");
-        Patient badPhonePatient = new Patient("Tom Green", "12345");
+        // E6: Patient phone with non-digit characters
+        System.out.println("[TEST E6] Patient phone with letters (invalid)");
+        Patient badPhonePatient = new Patient("Tom Green", "abcdefghij");
         manager.bookAppointment(badPhonePatient, gp2, 30, "Tuesday");
         System.out.println();
 
