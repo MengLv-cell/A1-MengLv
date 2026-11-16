@@ -3,7 +3,8 @@ import java.util.Arrays;
 
 /**
  * Main entry class for PROG2004 Assignment 1.
- * All valid bookings are scheduled on the same day (Monday).
+ * All valid booking demonstrations are scheduled on the same day (Monday).
+ * GP2 is used only for non-working day error testing.
  * Demonstrates full system features, error cases and subclass-specific duties.
  * @author Meng Lv
  */
@@ -16,7 +17,7 @@ public class AssignmentOne {
         System.out.println("PART 3: Health Professional Team");
         System.out.println("==================================================");
 
-        // All staff listed below have Monday as a working day for demo bookings
+        // Staff available on Monday are used for normal booking demo
         HealthProfessional gp1 = new GeneralPractitioner(101, "Anna Miller",
                 new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Friday")), true);
         HealthProfessional gp2 = new GeneralPractitioner(102, "Ben Carter",
@@ -110,6 +111,7 @@ public class AssignmentOne {
         System.out.println("PART 6: Error & Rejection Test Cases");
         System.out.println("==================================================");
 
+        // All error tests use Monday except E10 (non-working day test)
         // E2: Cancel non-existent appointment
         System.out.println("[TEST E2] Cancel non-existent appointment");
         manager.cancelByProfessionalAndTime(999, 0);
@@ -122,23 +124,23 @@ public class AssignmentOne {
 
         // E4: Time slot after last valid slot
         System.out.println("[TEST E4] Booking at 16:00 (after last valid slot 15:30)");
-        manager.bookAppointment(p1, gp2, 480, "Tuesday");
+        manager.bookAppointment(p1, gp1, 480, "Monday");
         System.out.println();
 
         // E5: Non-30-minute time slot
         System.out.println("[TEST E5] Booking at 08:15 (not aligned to 30-min slot)");
-        manager.bookAppointment(p1, gp2, 15, "Tuesday");
+        manager.bookAppointment(p1, gp1, 15, "Monday");
         System.out.println();
 
         // E6: Invalid patient phone (non-digit characters)
         System.out.println("[TEST E6] Patient phone with non-digit characters");
         Patient badPhonePatient = new Patient("Tom Green", "abcdefghij");
-        manager.bookAppointment(badPhonePatient, gp2, 30, "Tuesday");
+        manager.bookAppointment(badPhonePatient, gp1, 30, "Monday");
         System.out.println();
 
         // E7: Null patient object
         System.out.println("[TEST E7] Booking with null patient");
-        manager.bookAppointment(null, gp2, 30, "Tuesday");
+        manager.bookAppointment(null, gp1, 30, "Monday");
         System.out.println();
 
         // E8: Filter with null phone argument

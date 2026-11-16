@@ -1,6 +1,7 @@
 /**
  * Represents a single appointment linking a patient and a health professional.
  * Time is stored as minutes offset from 08:00.
+ * Internal state is protected against null pointer exceptions.
  * @author Meng Lv
  */
 public class Appointment implements Comparable<Appointment> {
@@ -10,15 +11,16 @@ public class Appointment implements Comparable<Appointment> {
     private String status;
 
     /**
-     * Constructs an appointment record.
-     * Callers must validate all inputs before creating an appointment.
-     * Business-level validation is handled by AppointmentManager.
+     * Constructs an appointment record with defensive input cleaning.
+     * Null patient values are replaced with an empty patient to avoid crashes.
+     * Business-level validation should be performed by AppointmentManager.
      * @param patient the patient who booked
      * @param professional the assigned health professional
      * @param timeSlotMinutes appointment start time in minutes from 08:00
      */
     public Appointment(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
-        this.patient = patient;
+        // Defensive: replace null patient with empty safe instance
+        this.patient = patient != null ? patient : new Patient("", "");
         this.professional = professional;
         this.timeSlotMinutes = timeSlotMinutes;
         this.status = "Booked";
@@ -26,7 +28,7 @@ public class Appointment implements Comparable<Appointment> {
 
     /**
      * Returns the patient associated with this appointment.
-     * @return patient object
+     * @return patient object; never null
      */
     public Patient getPatient() {
         return patient;
@@ -34,7 +36,7 @@ public class Appointment implements Comparable<Appointment> {
 
     /**
      * Returns the health professional assigned to this appointment.
-     * @return health professional object
+     * @return health professional object; may be null if constructed with invalid input
      */
     public HealthProfessional getProfessional() {
         return professional;
@@ -65,9 +67,9 @@ public class Appointment implements Comparable<Appointment> {
     }
 
     /**
-     * Compares appointments by start time for sorting.
+     * Compares appointments by start time for ascending sorting.
      * @param other the other appointment to compare with
-     * @return negative if this appointment is earlier, positive if later
+     * @return negative if this appointment is earlier, positive if later, zero if same time
      */
     @Override
     public int compareTo(Appointment other) {
@@ -77,12 +79,17 @@ public class Appointment implements Comparable<Appointment> {
     /**
      * Returns a formatted string representation of the appointment.
      * Includes time, status, patient info and full professional details.
+     * Defensive against null professional values to avoid runtime crashes.
      * @return formatted appointment string
      */
     @Override
     public String toString() {
+        String proInfo = professional != null
+                ? professional.toString()
+                : "Unknown Professional";
+
         return "[" + ClinicSchedule.formatTime(timeSlotMinutes) + "] [" + status + "] "
                 + patient.toString()
-                + " | " + professional.toString();
+                + " | " + proInfo;
     }
 }

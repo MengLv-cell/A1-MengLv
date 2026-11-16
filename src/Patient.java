@@ -1,5 +1,6 @@
 /**
  * Represents a patient with basic contact details.
+ * Internal state is always kept safe and free of null values.
  * @author Meng Lv
  */
 public class Patient {
@@ -7,13 +8,16 @@ public class Patient {
     private String mobilePhone;
 
     /**
-     * Constructs a patient record with the given details.
-     * Invalid phone numbers will be stored as empty string.
-     * @param fullName patient full name
-     * @param mobilePhone 10-digit contact phone number
+     * Constructs a patient record with validated details.
+     * Invalid inputs are cleaned to safe default values.
+     * @param fullName patient full name; null or blank values are stored as empty string
+     * @param mobilePhone 10-digit contact phone number; invalid values are stored as empty string
      */
     public Patient(String fullName, String mobilePhone) {
-        this.fullName = fullName;
+        // Clean name: ensure no null value inside the object
+        this.fullName = (fullName != null && !fullName.isBlank()) ? fullName : "";
+
+        // Clean phone: only valid 10-digit numbers are stored
         if (isValidMobile(mobilePhone)) {
             this.mobilePhone = mobilePhone;
         } else {
@@ -40,7 +44,7 @@ public class Patient {
 
     /**
      * Returns the patient full name.
-     * @return patient name
+     * @return patient name; never returns null
      */
     public String getFullName() {
         return fullName;
@@ -76,6 +80,10 @@ public class Patient {
         }
     }
 
+    /**
+     * Returns a formatted string with patient details.
+     * @return formatted patient information
+     */
     @Override
     public String toString() {
         return "Patient: " + fullName + " | Phone: " + mobilePhone;
