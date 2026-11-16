@@ -105,7 +105,7 @@ public abstract class HealthProfessional {
     /**
      * Updates the available working days.
      * Invalid entries and duplicates are filtered automatically.
-     * Null or empty input is ignored to ensure the professional always has at least one working day.
+     * Empty or null input is ignored to keep at least one working day.
      * Rule is consistent with factory creation logic.
      * @param availableDays new working days list
      */
@@ -114,11 +114,9 @@ public abstract class HealthProfessional {
             return;
         }
         ArrayList<String> cleanedDays = cleanWeekdayList(availableDays);
-        // 与工厂规则保持一致：空工作日列表不生效，保留原有状态
-        if (cleanedDays.isEmpty()) {
-            return;
+        if (!cleanedDays.isEmpty()) {
+            this.availableDays = cleanedDays;
         }
-        this.availableDays = cleanedDays;
     }
 
     /**

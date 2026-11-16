@@ -142,8 +142,7 @@ public class AssignmentOne {
         manager.bookAppointment(p1, gp1, 15, "Monday");
         System.out.println();
 
-        // E6: Invalid patient phone (non-digit characters)
-        // Patient object is created with empty phone, but booking is rejected at appointment level
+        // E6: Invalid patient phone (rejected by AppointmentManager phone validation)
         System.out.println("[TEST E6] Booking with invalid phone number format");
         Patient badPhonePatient = Patient.create("Tom Green", "abcdefghij");
         manager.bookAppointment(badPhonePatient, gp1, 30, "Monday");

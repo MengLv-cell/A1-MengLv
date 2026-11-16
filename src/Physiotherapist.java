@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /**
  * Physiotherapist health professional type.
  * Provides physical therapy and rehabilitation services.
- * @author Meng Lv
+ * @author Meng L 
  */
 public class Physiotherapist extends HealthProfessional {
     private String treatmentFocus;
@@ -78,4 +78,4 @@ public class Physiotherapist extends HealthProfessional {
     public String toString() {
         return super.toString() + " | Treatment focus: " + treatmentFocus;
     }
-}
+}  
