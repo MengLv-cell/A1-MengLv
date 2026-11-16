@@ -7,6 +7,7 @@ public class Appointment implements Comparable<Appointment> {
     private Patient patient;
     private HealthProfessional professional;
     private int timeSlotMinutes;
+    private String status;
 
     /**
      * Constructs an appointment record.
@@ -18,6 +19,7 @@ public class Appointment implements Comparable<Appointment> {
         this.patient = patient;
         this.professional = professional;
         this.timeSlotMinutes = timeSlotMinutes;
+        this.status = "Booked";
     }
 
     public Patient getPatient() {
@@ -32,6 +34,17 @@ public class Appointment implements Comparable<Appointment> {
         return timeSlotMinutes;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Marks the appointment as cancelled (soft delete).
+     */
+    public void cancel() {
+        this.status = "Cancelled";
+    }
+
     @Override
     public int compareTo(Appointment other) {
         return Integer.compare(this.timeSlotMinutes, other.timeSlotMinutes);
@@ -39,7 +52,7 @@ public class Appointment implements Comparable<Appointment> {
 
     @Override
     public String toString() {
-        return "[" + ClinicSchedule.formatTime(timeSlotMinutes) + "] "
+        return "[" + ClinicSchedule.formatTime(timeSlotMinutes) + "] [" + status + "] "
                 + patient.toString()
                 + " | " + professional.getName()
                 + " (" + professional.getRole() + ", ID:" + professional.getProfessionalId() + ")";

@@ -27,7 +27,9 @@ public class AppointmentManager {
 
     private boolean isSlotAlreadyBooked(HealthProfessional pro, int slotMinutes) {
         for (Appointment app : appointments) {
-            if (app.getProfessional().equals(pro) && app.getTimeSlotMinutes() == slotMinutes) {
+            if (app.getProfessional().equals(pro)
+                    && app.getTimeSlotMinutes() == slotMinutes
+                    && app.getStatus().equals("Booked")) {
                 return true;
             }
         }
@@ -81,7 +83,8 @@ public class AppointmentManager {
     public ArrayList<Appointment> filterByProfessionalId(int professionalId) {
         ArrayList<Appointment> result = new ArrayList<>();
         for (Appointment app : appointments) {
-            if (app.getProfessional().getProfessionalId() == professionalId) {
+            if (app.getProfessional().getProfessionalId() == professionalId
+                    && app.getStatus().equals("Booked")) {
                 result.add(app);
             }
         }
@@ -95,7 +98,8 @@ public class AppointmentManager {
             return result;
         }
         for (Appointment app : appointments) {
-            if (mobilePhone.equals(app.getPatient().getMobilePhone())) {
+            if (mobilePhone.equals(app.getPatient().getMobilePhone())
+                    && app.getStatus().equals("Booked")) {
                 result.add(app);
             }
         }
@@ -107,19 +111,19 @@ public class AppointmentManager {
         Collections.sort(list);
     }
 
-    // ---------- cancellation (physical delete) ----------
+    // ---------- cancellation (soft delete) ----------
     public boolean cancelByProfessionalAndTime(int professionalId, int timeSlotMinutes) {
-        for (int i = 0; i < appointments.size(); i++) {
-            Appointment app = appointments.get(i);
+        for (Appointment app : appointments) {
             if (app.getProfessional().getProfessionalId() == professionalId
-                    && app.getTimeSlotMinutes() == timeSlotMinutes) {
-                appointments.remove(i);
+                    && app.getTimeSlotMinutes() == timeSlotMinutes
+                    && app.getStatus().equals("Booked")) {
+                app.cancel();
                 System.out.println("[OK] Cancelled appointment for professional ID "
                         + professionalId + " at " + ClinicSchedule.formatTime(timeSlotMinutes));
                 return true;
             }
         }
-        System.out.println("[WARNING] No appointment found for professional ID "
+        System.out.println("[WARNING] No active appointment found for professional ID "
                 + professionalId + " at " + ClinicSchedule.formatTime(timeSlotMinutes));
         return false;
     }
@@ -130,25 +134,32 @@ public class AppointmentManager {
             return false;
         }
         boolean removed = false;
-        for (int i = appointments.size() - 1; i >= 0; i--) {
-            if (mobilePhone.equals(appointments.get(i).getPatient().getMobilePhone())) {
-                appointments.remove(i);
+        for (Appointment app : appointments) {
+            if (mobilePhone.equals(app.getPatient().getMobilePhone())
+                    && app.getStatus().equals("Booked")) {
+                app.cancel();
                 removed = true;
             }
         }
         if (removed) {
-            System.out.println("[OK] Cancelled all appointments for phone: " + mobilePhone);
+            System.out.println("[OK] Cancelled all active appointments for phone: " + mobilePhone);
         } else {
-            System.out.println("[WARNING] No appointments found for phone: " + mobilePhone);
+            System.out.println("[WARNING] No active appointments found for phone: " + mobilePhone);
         }
         return removed;
     }
 
     // ---------- display ----------
-    public void displayAllAppointments() {
-        System.out.println("----- All Appointments (" + appointments.size() + " total) -----");
+    public void displayAllActiveAppointments() {
+        int count = 0;
         for (Appointment app : appointments) {
-            System.out.println(app);
+            if (app.getStatus().equals("Booked")) count++;
+        }
+        System.out.println("----- Active Appointments (" + count + " total) -----");
+        for (Appointment app : appointments) {
+            if (app.getStatus().equals("Booked")) {
+                System.out.println(app);
+            }
         }
     }
 
