@@ -1,7 +1,7 @@
 /**
  * Represents a single appointment linking a patient and a health professional.
- * Time is stored as minutes offset from 08:00.
- * Internal state is protected against null pointer exceptions.
+ * Objects can only be created via the static factory method.
+ * Invalid inputs will return null and no object is created.
  * @author Meng Lv
  */
 public class Appointment implements Comparable<Appointment> {
@@ -11,85 +11,66 @@ public class Appointment implements Comparable<Appointment> {
     private String status;
 
     /**
-     * Constructs an appointment record with defensive input cleaning.
-     * Null patient values are replaced with an empty patient to avoid crashes.
-     * Business-level validation should be performed by AppointmentManager.
-     * @param patient the patient who booked
-     * @param professional the assigned health professional
-     * @param timeSlotMinutes appointment start time in minutes from 08:00
+     * Private constructor: internal use only.
+     * Callers must use the create() factory method to obtain instances.
+     * @param patient valid patient object
+     * @param professional valid health professional object
+     * @param timeSlotMinutes valid time slot
      */
-    public Appointment(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
-        // Defensive: replace null patient with empty safe instance
-        this.patient = patient != null ? patient : new Patient("", "");
+    private Appointment(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
+        this.patient = patient;
         this.professional = professional;
         this.timeSlotMinutes = timeSlotMinutes;
         this.status = "Booked";
     }
 
     /**
-     * Returns the patient associated with this appointment.
-     * @return patient object; never null
+     * Static factory method to create a valid Appointment object.
+     * Returns null if any input is invalid.
+     * @param patient valid patient object, cannot be null
+     * @param professional valid health professional, cannot be null
+     * @param timeSlotMinutes valid 30-min slot within opening hours
+     * @return valid Appointment object, or null if validation fails
      */
+    public static Appointment create(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
+        if (patient == null || professional == null) {
+            return null;
+        }
+        if (!ClinicSchedule.isValidSlot(timeSlotMinutes)) {
+            return null;
+        }
+        return new Appointment(patient, professional, timeSlotMinutes);
+    }
+
     public Patient getPatient() {
         return patient;
     }
 
-    /**
-     * Returns the health professional assigned to this appointment.
-     * @return health professional object; may be null if constructed with invalid input
-     */
     public HealthProfessional getProfessional() {
         return professional;
     }
 
-    /**
-     * Returns the appointment start time in minutes from 08:00.
-     * @return time slot in minutes
-     */
     public int getTimeSlotMinutes() {
         return timeSlotMinutes;
     }
 
-    /**
-     * Returns the current status of the appointment.
-     * @return appointment status (Booked / Cancelled)
-     */
     public String getStatus() {
         return status;
     }
 
-    /**
-     * Marks the appointment as cancelled (soft delete).
-     * Does not remove the record from the system.
-     */
     public void cancel() {
         this.status = "Cancelled";
     }
 
-    /**
-     * Compares appointments by start time for ascending sorting.
-     * @param other the other appointment to compare with
-     * @return negative if this appointment is earlier, positive if later, zero if same time
-     */
     @Override
     public int compareTo(Appointment other) {
         return Integer.compare(this.timeSlotMinutes, other.timeSlotMinutes);
     }
 
-    /**
-     * Returns a formatted string representation of the appointment.
-     * Includes time, status, patient info and full professional details.
-     * Defensive against null professional values to avoid runtime crashes.
-     * @return formatted appointment string
-     */
     @Override
     public String toString() {
-        String proInfo = professional != null
-                ? professional.toString()
-                : "Unknown Professional";
-
         return "[" + ClinicSchedule.formatTime(timeSlotMinutes) + "] [" + status + "] "
                 + patient.toString()
-                + " | " + proInfo;
+                + " | " + professional.toString();
     }
 }

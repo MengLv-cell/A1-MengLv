@@ -3,7 +3,7 @@ import java.util.Collections;
 
 /**
  * Manages the full collection of appointments and all booking operations.
- * All validation and rejection logic lives in this class.
+ * All validation and business logic lives in this class.
  * @author Meng Lv
  */
 public class AppointmentManager {
@@ -18,14 +18,29 @@ public class AppointmentManager {
 
     // ---------- private validation helpers ----------
 
+    /**
+     * Checks if a professional ID is valid (positive integer).
+     * @param id ID to check
+     * @return true if valid
+     */
     private boolean isValidProfessionalId(int id) {
         return id > 0;
     }
 
+    /**
+     * Checks if a name string is not blank.
+     * @param name name to check
+     * @return true if valid
+     */
     private boolean isValidName(String name) {
         return name != null && !name.isBlank();
     }
 
+    /**
+     * Checks if a phone number is a valid 10-digit numeric string.
+     * @param phone phone number to check
+     * @return true if valid
+     */
     private boolean isValidMobile(String phone) {
         if (phone == null || phone.length() != 10) {
             return false;
@@ -38,6 +53,12 @@ public class AppointmentManager {
         return true;
     }
 
+    /**
+     * Checks if a time slot is already booked by an active appointment.
+     * @param pro target health professional
+     * @param slotMinutes target time slot
+     * @return true if the slot is already booked
+     */
     private boolean isSlotAlreadyBooked(HealthProfessional pro, int slotMinutes) {
         for (Appointment app : appointments) {
             if (app.getProfessional().equals(pro)
@@ -52,12 +73,13 @@ public class AppointmentManager {
     // ---------- public booking operations ----------
 
     /**
-     * Validates and adds a new appointment.
+     * Validates and creates a new appointment.
      * Rejects invalid data, double bookings and non-working days.
+     * Uses static factory to ensure only valid appointment objects are created.
      * @param patient patient record
-     * @param professional chosen health professional
-     * @param timeSlotMinutes appointment time in minutes from 08:00
-     * @param day day of the week for working day check
+     * @param professional assigned health professional
+     * @param timeSlotMinutes appointment start time in minutes from 08:00
+     * @param day day of the week for working day validation
      * @return true if booking was accepted, false if rejected
      */
     public boolean bookAppointment(Patient patient, HealthProfessional professional, int timeSlotMinutes, String day) {
@@ -101,7 +123,12 @@ public class AppointmentManager {
             return false;
         }
 
-        Appointment newAppointment = new Appointment(patient, professional, timeSlotMinutes);
+        Appointment newAppointment = Appointment.create(patient, professional, timeSlotMinutes);
+        if (newAppointment == null) {
+            System.out.println("[WARNING] REJECTED: Appointment cannot be created with invalid data.");
+            return false;
+        }
+
         appointments.add(newAppointment);
         System.out.println("[OK] Booking confirmed: " + newAppointment);
         return true;
@@ -112,7 +139,7 @@ public class AppointmentManager {
     /**
      * Returns all active appointments for a given professional ID.
      * @param professionalId target professional ID
-     * @return filtered list of appointments
+     * @return filtered list of active appointments
      */
     public ArrayList<Appointment> filterByProfessionalId(int professionalId) {
         ArrayList<Appointment> result = new ArrayList<>();
@@ -128,7 +155,7 @@ public class AppointmentManager {
     /**
      * Returns all active appointments matching a patient phone number.
      * @param mobilePhone target phone number
-     * @return filtered list of appointments
+     * @return filtered list of active appointments
      */
     public ArrayList<Appointment> filterByPatientPhone(String mobilePhone) {
         ArrayList<Appointment> result = new ArrayList<>();
@@ -148,7 +175,7 @@ public class AppointmentManager {
     // ---------- sorting ----------
 
     /**
-     * Sorts the provided appointment list by time, earliest first.
+     * Sorts the provided appointment list by start time, earliest first.
      * @param list list to sort
      */
     public void sortByTime(ArrayList<Appointment> list) {
@@ -158,7 +185,8 @@ public class AppointmentManager {
     // ---------- cancellation (soft delete) ----------
 
     /**
-     * Cancels an appointment by professional ID and time slot (soft delete).
+     * Cancels an active appointment by professional ID and time slot.
+     * Uses soft delete: changes status, does not remove the record.
      * @param professionalId target professional ID
      * @param timeSlotMinutes target time slot
      * @return true if cancelled, false if not found
@@ -180,7 +208,8 @@ public class AppointmentManager {
     }
 
     /**
-     * Cancels all active appointments matching a patient phone number (soft delete).
+     * Cancels all active appointments matching a patient phone number.
+     * Uses soft delete: changes status, does not remove records.
      * @param mobilePhone target phone number
      * @return true if at least one appointment was cancelled
      */
@@ -189,26 +218,26 @@ public class AppointmentManager {
             System.out.println("[WARNING] Cannot cancel: phone argument is null.");
             return false;
         }
-        boolean removed = false;
+        boolean cancelled = false;
         for (Appointment app : appointments) {
             if (mobilePhone.equals(app.getPatient().getMobilePhone())
                     && app.getStatus().equals("Booked")) {
                 app.cancel();
-                removed = true;
+                cancelled = true;
             }
         }
-        if (removed) {
+        if (cancelled) {
             System.out.println("[OK] Cancelled all active appointments for phone: " + mobilePhone);
         } else {
             System.out.println("[WARNING] No active appointments found for phone: " + mobilePhone);
         }
-        return removed;
+        return cancelled;
     }
 
     // ---------- display helpers ----------
 
     /**
-     * Prints all active appointments currently stored.
+     * Prints all currently active appointments.
      */
     public void displayAllActiveAppointments() {
         int count = 0;
@@ -224,7 +253,7 @@ public class AppointmentManager {
     }
 
     /**
-     * Prints a provided list of appointments with a title.
+     * Prints a list of appointments with a section title.
      * @param list appointments to print
      * @param title section title
      */

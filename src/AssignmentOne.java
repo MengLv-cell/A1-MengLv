@@ -17,20 +17,20 @@ public class AssignmentOne {
         System.out.println("PART 3: Health Professional Team");
         System.out.println("==================================================");
 
-        // Staff available on Monday are used for normal booking demo
-        HealthProfessional gp1 = new GeneralPractitioner(101, "Anna Miller",
+        // All staff created via static factory method
+        HealthProfessional gp1 = GeneralPractitioner.create(101, "Anna Miller",
                 new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Friday")), true);
-        HealthProfessional gp2 = new GeneralPractitioner(102, "Ben Carter",
+        HealthProfessional gp2 = GeneralPractitioner.create(102, "Ben Carter",
                 new ArrayList<>(Arrays.asList("Tuesday", "Thursday")), true);
-        HealthProfessional gp3 = new GeneralPractitioner(103, "Clara Wilson",
+        HealthProfessional gp3 = GeneralPractitioner.create(103, "Clara Wilson",
                 new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Thursday", "Friday")), true);
-        HealthProfessional spec1 = new Specialist(201, "David Moore",
+        HealthProfessional spec1 = Specialist.create(201, "David Moore",
                 new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Thursday")), "Cardiology");
-        HealthProfessional nurse1 = new Nurse(301, "Emma Taylor",
+        HealthProfessional nurse1 = Nurse.create(301, "Emma Taylor",
                 new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")), true);
-        HealthProfessional diet1 = new Dietitian(401, "Fiona Brown",
+        HealthProfessional diet1 = Dietitian.create(401, "Fiona Brown",
                 new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Friday")), "Sports Nutrition");
-        HealthProfessional physio1 = new Physiotherapist(501, "Grace Hall",
+        HealthProfessional physio1 = Physiotherapist.create(501, "Grace Hall",
                 new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Friday")), "Sports Injury");
 
         ArrayList<HealthProfessional> staff = new ArrayList<>();
@@ -52,9 +52,9 @@ public class AssignmentOne {
         System.out.println("PART 6: Normal Booking Workflow (Monday)");
         System.out.println("==================================================");
 
-        Patient p1 = new Patient("James Lee", "0412345678");
-        Patient p2 = new Patient("Sophie Wang", "0498765432");
-        Patient p3 = new Patient("Liam Davis", "0422111333");
+        Patient p1 = Patient.create("James Lee", "0412345678");
+        Patient p2 = Patient.create("Sophie Wang", "0498765432");
+        Patient p3 = Patient.create("Liam Davis", "0422111333");
 
         // Added out of order to clearly show sorting effect
         // One booking for each professional type, all valid on Monday
@@ -134,7 +134,7 @@ public class AssignmentOne {
 
         // E6: Invalid patient phone (non-digit characters)
         System.out.println("[TEST E6] Patient phone with non-digit characters");
-        Patient badPhonePatient = new Patient("Tom Green", "abcdefghij");
+        Patient badPhonePatient = Patient.create("Tom Green", "abcdefghij");
         manager.bookAppointment(badPhonePatient, gp1, 30, "Monday");
         System.out.println();
 
