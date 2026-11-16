@@ -1,11 +1,15 @@
 /**
  * Fixed daily schedule configuration for the clinic.
  * All time values are represented as minutes from 08:00.
+ * Last appointment starts at 15:30 and ends at 16:00 (closing time).
  * @author Meng Lv
  */
 public class ClinicSchedule {
+    /** Clinic opening time (08:00), offset in minutes from 8am. */
     public static final int OPENING_MINUTES = 0;
-    public static final int CLOSING_MINUTES = 480;
+    /** Last valid appointment start time (15:30), offset in minutes from 8am. */
+    public static final int LAST_SLOT_MINUTES = 450;
+    /** Length of each appointment slot in minutes. */
     public static final int SLOT_INTERVAL_MINUTES = 30;
 
     /**
@@ -15,7 +19,7 @@ public class ClinicSchedule {
      */
     public static boolean isValidSlot(int minutes) {
         return minutes >= OPENING_MINUTES
-                && minutes <= CLOSING_MINUTES
+                && minutes <= LAST_SLOT_MINUTES
                 && minutes % SLOT_INTERVAL_MINUTES == 0;
     }
 
