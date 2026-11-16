@@ -3,8 +3,8 @@ import java.util.Arrays;
 
 /**
  * Main entry class for PROG2004 Assignment 1.
- * All valid bookings are for the same day (Monday).
- * Demonstrates full system features and all error test cases.
+ * All valid bookings are scheduled on the same day (Monday).
+ * Demonstrates full system features, error cases and subclass-specific duties.
  * @author Meng Lv
  */
 public class AssignmentOne {
@@ -16,6 +16,7 @@ public class AssignmentOne {
         System.out.println("PART 3: Health Professional Team");
         System.out.println("==================================================");
 
+        // All staff listed below have Monday as a working day for demo bookings
         HealthProfessional gp1 = new GeneralPractitioner(101, "Anna Miller",
                 new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Friday")), true);
         HealthProfessional gp2 = new GeneralPractitioner(102, "Ben Carter",
@@ -23,11 +24,11 @@ public class AssignmentOne {
         HealthProfessional gp3 = new GeneralPractitioner(103, "Clara Wilson",
                 new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Thursday", "Friday")), true);
         HealthProfessional spec1 = new Specialist(201, "David Moore",
-                new ArrayList<>(Arrays.asList("Wednesday", "Thursday")), "Cardiology");
+                new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Thursday")), "Cardiology");
         HealthProfessional nurse1 = new Nurse(301, "Emma Taylor",
                 new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")), true);
         HealthProfessional diet1 = new Dietitian(401, "Fiona Brown",
-                new ArrayList<>(Arrays.asList("Tuesday", "Friday")), "Sports Nutrition");
+                new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Friday")), "Sports Nutrition");
         HealthProfessional physio1 = new Physiotherapist(501, "Grace Hall",
                 new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Friday")), "Sports Injury");
 
@@ -54,21 +55,31 @@ public class AssignmentOne {
         Patient p2 = new Patient("Sophie Wang", "0498765432");
         Patient p3 = new Patient("Liam Davis", "0422111333");
 
-        // Added out of order to clearly show sorting effect later
-        manager.bookAppointment(p2, gp1, 180, "Monday"); // 11:00
-        manager.bookAppointment(p1, gp1, 0, "Monday");   // 08:00
-        manager.bookAppointment(p3, gp1, 60, "Monday");  // 09:00
-        manager.bookAppointment(p1, nurse1, 120, "Monday"); // 10:00
-        manager.bookAppointment(p2, diet1, 240, "Monday");  // 12:00
-        manager.bookAppointment(p3, physio1, 300, "Monday");// 13:00
+        // Added out of order to clearly show sorting effect
+        // One booking for each professional type, all valid on Monday
+        manager.bookAppointment(p2, gp1, 180, "Monday");     // GP - 11:00
+        manager.bookAppointment(p1, gp1, 0, "Monday");       // GP - 08:00
+        manager.bookAppointment(p3, spec1, 60, "Monday");    // Specialist - 09:00
+        manager.bookAppointment(p1, nurse1, 120, "Monday");  // Nurse - 10:00
+        manager.bookAppointment(p2, diet1, 240, "Monday");   // Dietitian - 12:00
+        manager.bookAppointment(p3, physio1, 300, "Monday"); // Physiotherapist - 13:00
         System.out.println();
 
         manager.displayAllActiveAppointments();
         System.out.println();
 
+        // Demonstrate unique duties for each professional type (polymorphism)
+        System.out.println("----- Professional Role Demonstration -----");
+        ((GeneralPractitioner) gp1).conductConsultation(p1.getFullName());
+        ((Specialist) spec1).acceptReferral(gp1.getName());
+        ((Nurse) nurse1).checkVitalSigns(p2.getFullName());
+        ((Dietitian) diet1).createMealPlan(p2.getFullName());
+        ((Physiotherapist) physio1).conductTherapySession(p3.getFullName());
+        System.out.println();
+
         // E1: Double booking test (run BEFORE cancellation)
-        System.out.println("[TEST E1] Double booking attempt: GP101 at 09:00 Monday");
-        manager.bookAppointment(p3, gp1, 60, "Monday");
+        System.out.println("[TEST E1] Double booking attempt: GP101 at 08:00 Monday");
+        manager.bookAppointment(p3, gp1, 0, "Monday");
         System.out.println();
 
         // Filter result is naturally out of order
