@@ -3,7 +3,7 @@ import java.util.Arrays;
 
 /**
  * Main entry class for PROG2004 Assignment 1.
- * All normal bookings are for the same day (Monday).
+ * All valid bookings are for the same day (Monday).
  * Demonstrates full system features and all error test cases.
  * @author Meng Lv
  */
@@ -11,7 +11,7 @@ public class AssignmentOne {
     public static void main(String[] args) {
         AppointmentManager manager = new AppointmentManager();
 
-        // ========== Part 3: Health Professionals ==========
+        // ========== Part 3: Health Professional Team ==========
         System.out.println("==================================================");
         System.out.println("PART 3: Health Professional Team");
         System.out.println("==================================================");
@@ -45,7 +45,7 @@ public class AssignmentOne {
         }
         System.out.println();
 
-        // ========== Part 6: Normal booking flow (single day: Monday) ==========
+        // ========== Part 6: Normal Booking Workflow (Monday only) ==========
         System.out.println("==================================================");
         System.out.println("PART 6: Normal Booking Workflow (Monday)");
         System.out.println("==================================================");
@@ -54,11 +54,11 @@ public class AssignmentOne {
         Patient p2 = new Patient("Sophie Wang", "0498765432");
         Patient p3 = new Patient("Liam Davis", "0422111333");
 
-        // Added in out-of-order to show sorting effect later
-        manager.bookAppointment(p3, gp3, 120, "Monday");  // 10:00
-        manager.bookAppointment(p1, gp1, 0, "Monday");     // 08:00
-        manager.bookAppointment(p2, gp1, 60, "Monday");    // 09:00
-        manager.bookAppointment(p1, nurse1, 180, "Monday"); // 11:00
+        // Added out of order to clearly show sorting effect later
+        manager.bookAppointment(p2, gp1, 180, "Monday"); // 11:00
+        manager.bookAppointment(p1, gp1, 0, "Monday");   // 08:00
+        manager.bookAppointment(p3, gp1, 60, "Monday");  // 09:00
+        manager.bookAppointment(p1, nurse1, 120, "Monday"); // 10:00
         manager.bookAppointment(p2, diet1, 240, "Monday");  // 12:00
         manager.bookAppointment(p3, physio1, 300, "Monday");// 13:00
         System.out.println();
@@ -66,12 +66,12 @@ public class AssignmentOne {
         manager.displayAllActiveAppointments();
         System.out.println();
 
-        // E1: Double booking test (BEFORE cancellation, slot is still active)
+        // E1: Double booking test (run BEFORE cancellation)
         System.out.println("[TEST E1] Double booking attempt: GP101 at 09:00 Monday");
         manager.bookAppointment(p3, gp1, 60, "Monday");
         System.out.println();
 
-        // Filter by professional
+        // Filter result is naturally out of order
         ArrayList<Appointment> byPro = manager.filterByProfessionalId(101);
         manager.displayList(byPro, "Filtered: Professional ID 101 (before sort)");
         System.out.println();
@@ -81,7 +81,6 @@ public class AssignmentOne {
         manager.displayList(byPro, "Sorted: Professional ID 101 by time");
         System.out.println();
 
-        // Filter by phone
         ArrayList<Appointment> byPhone = manager.filterByPatientPhone("0412345678");
         manager.displayList(byPhone, "Filtered: Patient phone 0412345678");
         System.out.println();
@@ -95,17 +94,17 @@ public class AssignmentOne {
         manager.displayAllActiveAppointments();
         System.out.println();
 
-        // ========== Part 6: Remaining error test cases ==========
+        // ========== Part 6: Error & Rejection Test Cases ==========
         System.out.println("==================================================");
         System.out.println("PART 6: Error & Rejection Test Cases");
         System.out.println("==================================================");
 
-        // E2: Cancel non-existent slot
+        // E2: Cancel non-existent appointment
         System.out.println("[TEST E2] Cancel non-existent appointment");
         manager.cancelByProfessionalAndTime(999, 0);
         System.out.println();
 
-        // E3: Cancel with unknown phone
+        // E3: Cancel with unknown phone number
         System.out.println("[TEST E3] Cancel with unknown phone number");
         manager.cancelByPatientPhone("0400000000");
         System.out.println();
@@ -115,34 +114,34 @@ public class AssignmentOne {
         manager.bookAppointment(p1, gp2, 480, "Tuesday");
         System.out.println();
 
-        // E5: Non-30-minute slot
-        System.out.println("[TEST E5] Booking at 08:15 (not aligned to slot)");
+        // E5: Non-30-minute time slot
+        System.out.println("[TEST E5] Booking at 08:15 (not aligned to 30-min slot)");
         manager.bookAppointment(p1, gp2, 15, "Tuesday");
         System.out.println();
 
-        // E6: Patient phone with non-digit characters
-        System.out.println("[TEST E6] Patient phone with letters (invalid)");
+        // E6: Invalid patient phone (non-digit characters)
+        System.out.println("[TEST E6] Patient phone with non-digit characters");
         Patient badPhonePatient = new Patient("Tom Green", "abcdefghij");
         manager.bookAppointment(badPhonePatient, gp2, 30, "Tuesday");
         System.out.println();
 
-        // E7: Null patient
+        // E7: Null patient object
         System.out.println("[TEST E7] Booking with null patient");
         manager.bookAppointment(null, gp2, 30, "Tuesday");
         System.out.println();
 
-        // E8: Filter with null phone
+        // E8: Filter with null phone argument
         System.out.println("[TEST E8] Filter with null phone argument");
         manager.filterByPatientPhone(null);
         System.out.println();
 
-        // E9: Cancel with null phone
+        // E9: Cancel with null phone argument
         System.out.println("[TEST E9] Cancel with null phone argument");
         manager.cancelByPatientPhone(null);
         System.out.println();
 
-        // E10: Non-working day
-        System.out.println("[TEST E10] Booking on a non-working day");
+        // E10: Non-working day (tests working day validation rule)
+        System.out.println("[TEST E10] Booking on a non-working day (GP2 does not work Monday)");
         manager.bookAppointment(p1, gp2, 60, "Monday");
         System.out.println();
 
