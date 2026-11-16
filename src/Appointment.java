@@ -1,5 +1,5 @@
 /**
- * Represents a single appointment linking a patient and a health professional at a time slot.
+ * Represents a single appointment linking a patient and a health professional.
  * Time is stored as minutes offset from 08:00.
  * @author Meng Lv
  */
@@ -10,43 +10,47 @@ public class Appointment implements Comparable<Appointment> {
     private String status;
 
     /**
-     * Constructs an appointment record with basic validation.
-     * Invalid inputs fall back to safe defaults to avoid invalid state.
-     * For full business validation, use AppointmentManager.bookAppointment().
+     * Constructs an appointment record.
+     * Callers must validate all inputs before creating an appointment.
      * @param patient the patient who booked
-     * @param professional the chosen health professional
-     * @param timeSlotMinutes appointment time as minutes from 08:00
+     * @param professional the assigned health professional
+     * @param timeSlotMinutes appointment start time in minutes from 08:00
      */
     public Appointment(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
-        if (patient != null) {
-            this.patient = patient;
-        } else {
-            this.patient = new Patient("Unknown Patient", "0000000000");
-        }
-
+        this.patient = patient;
         this.professional = professional;
-
-        if (ClinicSchedule.isValidSlot(timeSlotMinutes)) {
-            this.timeSlotMinutes = timeSlotMinutes;
-        } else {
-            this.timeSlotMinutes = ClinicSchedule.OPENING_MINUTES;
-        }
-
+        this.timeSlotMinutes = timeSlotMinutes;
         this.status = "Booked";
     }
 
+    /**
+     * Returns the patient of this appointment.
+     * @return patient object
+     */
     public Patient getPatient() {
         return patient;
     }
 
+    /**
+     * Returns the assigned health professional.
+     * @return health professional object
+     */
     public HealthProfessional getProfessional() {
         return professional;
     }
 
+    /**
+     * Returns the appointment start time in minutes from 08:00.
+     * @return time slot in minutes
+     */
     public int getTimeSlotMinutes() {
         return timeSlotMinutes;
     }
 
+    /**
+     * Returns the current status of the appointment.
+     * @return appointment status
+     */
     public String getStatus() {
         return status;
     }
@@ -67,7 +71,6 @@ public class Appointment implements Comparable<Appointment> {
     public String toString() {
         return "[" + ClinicSchedule.formatTime(timeSlotMinutes) + "] [" + status + "] "
                 + patient.toString()
-                + " | " + professional.getName()
-                + " (" + professional.getRole() + ", ID:" + professional.getProfessionalId() + ")";
+                + " | " + professional.toString();
     }
 }

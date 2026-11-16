@@ -11,30 +11,41 @@ public abstract class HealthProfessional {
     private ArrayList<String> availableDays;
 
     /**
-     * Constructs a health professional with validated details.
-     * Invalid inputs will be replaced with safe default values.
-     * @param professionalId numeric ID of the professional, must be positive
-     * @param name full name, must not be blank
-     * @param availableDays working days of the week, must not be null
+     * Constructs a health professional with the given details.
+     * Invalid weekday entries and duplicates will be filtered automatically.
+     * @param professionalId numeric ID of the professional
+     * @param name full name of the professional
+     * @param availableDays list of working weekdays
      */
     public HealthProfessional(int professionalId, String name, ArrayList<String> availableDays) {
-        if (professionalId > 0) {
-            this.professionalId = professionalId;
-        } else {
-            this.professionalId = 1;
-        }
+        this.professionalId = professionalId;
+        this.name = name;
 
-        if (name != null && !name.isBlank()) {
-            this.name = name;
-        } else {
-            this.name = "Unnamed Professional";
-        }
-
+        ArrayList<String> cleanedDays = new ArrayList<>();
         if (availableDays != null) {
-            this.availableDays = new ArrayList<>(availableDays);
-        } else {
-            this.availableDays = new ArrayList<>();
+            for (String day : availableDays) {
+                if (isValidWeekday(day) && !cleanedDays.contains(day)) {
+                    cleanedDays.add(day);
+                }
+            }
         }
+        this.availableDays = cleanedDays;
+    }
+
+    /**
+     * Checks if a string is a valid standard weekday name.
+     * @param day day name to check
+     * @return true if the day is a valid weekday
+     */
+    private boolean isValidWeekday(String day) {
+        if (day == null) return false;
+        return day.equals("Monday")
+                || day.equals("Tuesday")
+                || day.equals("Wednesday")
+                || day.equals("Thursday")
+                || day.equals("Friday")
+                || day.equals("Saturday")
+                || day.equals("Sunday");
     }
 
     /**
@@ -43,16 +54,24 @@ public abstract class HealthProfessional {
      */
     public abstract String getRole();
 
+    /**
+     * Returns the professional ID number.
+     * @return professional ID
+     */
     public int getProfessionalId() {
         return professionalId;
     }
 
+    /**
+     * Returns the professional full name.
+     * @return full name
+     */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns a copy of the available days list.
+     * Returns a copy of the available working days list.
      * Modifying the returned list will not affect the internal state.
      * @return copy of working days
      */
@@ -61,23 +80,28 @@ public abstract class HealthProfessional {
     }
 
     /**
-     * Updates the professional name with validation.
-     * @param name new full name, must not be blank
+     * Updates the professional full name.
+     * @param name new full name
      */
     public void setName(String name) {
-        if (name != null && !name.isBlank()) {
-            this.name = name;
-        }
+        this.name = name;
     }
 
     /**
-     * Updates the available working days with validation.
-     * @param availableDays new working days list, must not be null
+     * Updates the available working days.
+     * Invalid entries and duplicates will be filtered automatically.
+     * @param availableDays new working days list
      */
     public void setAvailableDays(ArrayList<String> availableDays) {
+        ArrayList<String> cleanedDays = new ArrayList<>();
         if (availableDays != null) {
-            this.availableDays = new ArrayList<>(availableDays);
+            for (String day : availableDays) {
+                if (isValidWeekday(day) && !cleanedDays.contains(day)) {
+                    cleanedDays.add(day);
+                }
+            }
         }
+        this.availableDays = cleanedDays;
     }
 
     @Override
