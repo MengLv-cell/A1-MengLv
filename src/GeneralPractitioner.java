@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 /**
  * General Practitioner (GP) health professional type.
+ * Provides general consultation and prescription services.
  * @author Meng Lv
  */
 public class GeneralPractitioner extends HealthProfessional {
@@ -19,13 +20,17 @@ public class GeneralPractitioner extends HealthProfessional {
         this.canPrescribeMedication = canPrescribeMedication;
     }
 
+    /**
+     * Returns the role name of this professional.
+     * @return role description
+     */
     @Override
     public String getRole() {
         return "General Practitioner";
     }
 
     /**
-     * Returns whether the GP can prescribe medication.
+     * Returns whether the GP has prescription authority.
      * @return prescription authority status
      */
     public boolean canPrescribeMedication() {
@@ -41,13 +46,17 @@ public class GeneralPractitioner extends HealthProfessional {
     }
 
     /**
-     * Prints a consultation action for demonstration.
-     * @param patientName name of the patient
+     * Simulates a general consultation action for demonstration.
+     * @param patientName name of the patient receiving consultation
      */
     public void conductConsultation(String patientName) {
         System.out.println("Dr. " + getName() + " conducts a general consultation for " + patientName);
     }
 
+    /**
+     * Returns a formatted string with full GP details.
+     * @return formatted professional information
+     */
     @Override
     public String toString() {
         return super.toString() + " | Can prescribe: " + canPrescribeMedication;

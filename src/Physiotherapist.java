@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Physiotherapist health professional type.
+ * Provides physical therapy and rehabilitation services.
  * @author Meng Lv
  */
 public class Physiotherapist extends HealthProfessional {
@@ -19,6 +20,10 @@ public class Physiotherapist extends HealthProfessional {
         this.treatmentFocus = treatmentFocus;
     }
 
+    /**
+     * Returns the role name of this professional.
+     * @return role description
+     */
     @Override
     public String getRole() {
         return "Physiotherapist";
@@ -41,13 +46,17 @@ public class Physiotherapist extends HealthProfessional {
     }
 
     /**
-     * Prints a therapy session action for demonstration.
-     * @param patientName name of the patient
+     * Simulates a therapy session action for demonstration.
+     * @param patientName name of the patient receiving therapy
      */
     public void conductTherapySession(String patientName) {
         System.out.println("Physiotherapist " + getName() + " conducts " + treatmentFocus + " therapy for " + patientName);
     }
 
+    /**
+     * Returns a formatted string with full physiotherapist details.
+     * @return formatted professional information
+     */
     @Override
     public String toString() {
         return super.toString() + " | Treatment focus: " + treatmentFocus;

@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Nurse health professional type.
+ * Provides patient care, vital sign checks and vaccination services.
  * @author Meng Lv
  */
 public class Nurse extends HealthProfessional {
@@ -19,14 +20,18 @@ public class Nurse extends HealthProfessional {
         this.canAdministerVaccination = canAdministerVaccination;
     }
 
+    /**
+     * Returns the role name of this professional.
+     * @return role description
+     */
     @Override
     public String getRole() {
         return "Nurse";
     }
 
     /**
-     * Returns whether the nurse can administer vaccinations.
-     * @return vaccination authority status
+     * Returns whether the nurse has vaccination authority.
+     * @return vaccination administration status
      */
     public boolean canAdministerVaccination() {
         return canAdministerVaccination;
@@ -41,13 +46,17 @@ public class Nurse extends HealthProfessional {
     }
 
     /**
-     * Prints a vital signs check action for demonstration.
-     * @param patientName name of the patient
+     * Simulates a vital signs check action for demonstration.
+     * @param patientName name of the patient being checked
      */
     public void checkVitalSigns(String patientName) {
         System.out.println("Nurse " + getName() + " checks vital signs for " + patientName);
     }
 
+    /**
+     * Returns a formatted string with full nurse details.
+     * @return formatted professional information
+     */
     @Override
     public String toString() {
         return super.toString() + " | Can vaccinate: " + canAdministerVaccination;

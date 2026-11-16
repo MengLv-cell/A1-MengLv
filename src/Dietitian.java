@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Dietitian health professional type.
+ * Provides nutrition advice and personalised meal plans.
  * @author Meng Lv
  */
 public class Dietitian extends HealthProfessional {
@@ -19,6 +20,10 @@ public class Dietitian extends HealthProfessional {
         this.nutritionFocus = nutritionFocus;
     }
 
+    /**
+     * Returns the role name of this professional.
+     * @return role description
+     */
     @Override
     public String getRole() {
         return "Dietitian";
@@ -41,13 +46,17 @@ public class Dietitian extends HealthProfessional {
     }
 
     /**
-     * Prints a meal plan creation action for demonstration.
-     * @param patientName name of the patient
+     * Simulates creating a personalised meal plan for demonstration.
+     * @param patientName name of the patient receiving the plan
      */
     public void createMealPlan(String patientName) {
         System.out.println("Dietitian " + getName() + " creates a " + nutritionFocus + " meal plan for " + patientName);
     }
 
+    /**
+     * Returns a formatted string with full dietitian details.
+     * @return formatted professional information
+     */
     @Override
     public String toString() {
         return super.toString() + " | Nutrition focus: " + nutritionFocus;
