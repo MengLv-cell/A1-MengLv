@@ -13,6 +13,7 @@ public abstract class HealthProfessional {
     /**
      * Constructs a health professional with the given details.
      * Invalid weekday entries and duplicates will be filtered automatically.
+     * Callers should ensure ID and name are valid before construction.
      * @param professionalId numeric ID of the professional
      * @param name full name of the professional
      * @param availableDays list of working weekdays
@@ -81,24 +82,29 @@ public abstract class HealthProfessional {
 
     /**
      * Updates the professional full name.
+     * Blank or null values are ignored to preserve valid state.
      * @param name new full name
      */
     public void setName(String name) {
-        this.name = name;
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        }
     }
 
     /**
      * Updates the available working days.
      * Invalid entries and duplicates will be filtered automatically.
+     * Null input is ignored to preserve valid state.
      * @param availableDays new working days list
      */
     public void setAvailableDays(ArrayList<String> availableDays) {
+        if (availableDays == null) {
+            return;
+        }
         ArrayList<String> cleanedDays = new ArrayList<>();
-        if (availableDays != null) {
-            for (String day : availableDays) {
-                if (isValidWeekday(day) && !cleanedDays.contains(day)) {
-                    cleanedDays.add(day);
-                }
+        for (String day : availableDays) {
+            if (isValidWeekday(day) && !cleanedDays.contains(day)) {
+                cleanedDays.add(day);
             }
         }
         this.availableDays = cleanedDays;

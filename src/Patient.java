@@ -48,7 +48,7 @@ public class Patient {
 
     /**
      * Returns the patient mobile phone number.
-     * @return 10-digit phone number
+     * @return 10-digit phone number, or empty string if invalid
      */
     public String getMobilePhone() {
         return mobilePhone;
@@ -56,15 +56,18 @@ public class Patient {
 
     /**
      * Updates the patient full name.
+     * Blank or null values are ignored to preserve valid state.
      * @param fullName new patient name
      */
     public void setFullName(String fullName) {
-        this.fullName = fullName;
+        if (fullName != null && !fullName.isBlank()) {
+            this.fullName = fullName;
+        }
     }
 
     /**
      * Updates the patient mobile phone number.
-     * Only accepts valid 10-digit numeric values.
+     * Only accepts valid 10-digit numeric values; invalid input is ignored.
      * @param mobilePhone new phone number
      */
     public void setMobilePhone(String mobilePhone) {
