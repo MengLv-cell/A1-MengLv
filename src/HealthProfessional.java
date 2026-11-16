@@ -11,15 +11,30 @@ public abstract class HealthProfessional {
     private ArrayList<String> availableDays;
 
     /**
-     * Constructs a health professional with all details.
-     * @param professionalId numeric ID of the professional
-     * @param name full name
-     * @param availableDays working days of the week
+     * Constructs a health professional with validated details.
+     * Invalid inputs will be replaced with safe default values.
+     * @param professionalId numeric ID of the professional, must be positive
+     * @param name full name, must not be blank
+     * @param availableDays working days of the week, must not be null
      */
     public HealthProfessional(int professionalId, String name, ArrayList<String> availableDays) {
-        this.professionalId = professionalId;
-        this.name = name;
-        this.availableDays = availableDays;
+        if (professionalId > 0) {
+            this.professionalId = professionalId;
+        } else {
+            this.professionalId = 1;
+        }
+
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        } else {
+            this.name = "Unnamed Professional";
+        }
+
+        if (availableDays != null) {
+            this.availableDays = new ArrayList<>(availableDays);
+        } else {
+            this.availableDays = new ArrayList<>();
+        }
     }
 
     /**
@@ -36,16 +51,33 @@ public abstract class HealthProfessional {
         return name;
     }
 
+    /**
+     * Returns a copy of the available days list.
+     * Modifying the returned list will not affect the internal state.
+     * @return copy of working days
+     */
     public ArrayList<String> getAvailableDays() {
-        return availableDays;
+        return new ArrayList<>(availableDays);
     }
 
+    /**
+     * Updates the professional name with validation.
+     * @param name new full name, must not be blank
+     */
     public void setName(String name) {
-        this.name = name;
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        }
     }
 
+    /**
+     * Updates the available working days with validation.
+     * @param availableDays new working days list, must not be null
+     */
     public void setAvailableDays(ArrayList<String> availableDays) {
-        this.availableDays = availableDays;
+        if (availableDays != null) {
+            this.availableDays = new ArrayList<>(availableDays);
+        }
     }
 
     @Override

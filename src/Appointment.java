@@ -10,15 +10,28 @@ public class Appointment implements Comparable<Appointment> {
     private String status;
 
     /**
-     * Constructs an appointment record.
+     * Constructs an appointment record with basic validation.
+     * Invalid inputs fall back to safe defaults to avoid invalid state.
+     * For full business validation, use AppointmentManager.bookAppointment().
      * @param patient the patient who booked
      * @param professional the chosen health professional
      * @param timeSlotMinutes appointment time as minutes from 08:00
      */
     public Appointment(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
-        this.patient = patient;
+        if (patient != null) {
+            this.patient = patient;
+        } else {
+            this.patient = new Patient("Unknown Patient", "0000000000");
+        }
+
         this.professional = professional;
-        this.timeSlotMinutes = timeSlotMinutes;
+
+        if (ClinicSchedule.isValidSlot(timeSlotMinutes)) {
+            this.timeSlotMinutes = timeSlotMinutes;
+        } else {
+            this.timeSlotMinutes = ClinicSchedule.OPENING_MINUTES;
+        }
+
         this.status = "Booked";
     }
 
