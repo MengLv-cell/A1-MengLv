@@ -37,7 +37,7 @@ public class AppointmentManager {
     }
 
     // ---------- booking ----------
-    public boolean bookAppointment(Patient patient, HealthProfessional professional, int timeSlotMinutes) {
+    public boolean bookAppointment(Patient patient, HealthProfessional professional, int timeSlotMinutes, String day) {
         if (patient == null) {
             System.out.println("[WARNING] REJECTED: Patient cannot be null.");
             return false;
@@ -66,10 +66,17 @@ public class AppointmentManager {
             System.out.println("[WARNING] REJECTED: Time slot " + ClinicSchedule.formatTime(timeSlotMinutes) + " is outside schedule.");
             return false;
         }
+        // 新增：排班工作日校验
+        if (!professional.getAvailableDays().contains(day)) {
+            System.out.println("[WARNING] REJECTED: " + professional.getName()
+                    + " is not available on " + day + ".");
+            return false;
+        }
+        // 隐私合规版重复提示（方案一）
         if (isSlotAlreadyBooked(professional, timeSlotMinutes)) {
-            System.out.println("[WARNING] REJECTED: Double booking for professional ID "
-                    + professional.getProfessionalId()
-                    + " at " + ClinicSchedule.formatTime(timeSlotMinutes));
+            System.out.println("[WARNING] REJECTED: Time slot "
+                    + ClinicSchedule.formatTime(timeSlotMinutes)
+                    + " is already booked for this professional.");
             return false;
         }
 
