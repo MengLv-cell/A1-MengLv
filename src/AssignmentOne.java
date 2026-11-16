@@ -27,6 +27,9 @@ public class AssignmentOne {
                 new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")), true);
         HealthProfessional diet1 = new Dietitian(401, "Fiona Brown",
                 new ArrayList<>(Arrays.asList("Tuesday", "Friday")), "Sports Nutrition");
+        // 新增：第5个子类，强化多态展示
+        HealthProfessional physio1 = new Physiotherapist(501, "Grace Hall",
+                new ArrayList<>(Arrays.asList("Monday", "Wednesday", "Friday")), "Sports Injury");
 
         ArrayList<HealthProfessional> staff = new ArrayList<>();
         staff.add(gp1);
@@ -35,6 +38,7 @@ public class AssignmentOne {
         staff.add(spec1);
         staff.add(nurse1);
         staff.add(diet1);
+        staff.add(physio1);
 
         for (HealthProfessional hp : staff) {
             System.out.println(hp);
